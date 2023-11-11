@@ -8,7 +8,6 @@ import { fetchTasks, deleteContact } from '../../redux/operations';
 
 const ContactItems = () => {
   const contacts = useSelector(getContacts);
-  console.log(contacts);
   const filter = useSelector(getFilter);
   const dispatch = useDispatch();
 

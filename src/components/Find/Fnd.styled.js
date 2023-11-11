@@ -2,10 +2,10 @@ import styled from 'styled-components';
 
 const FindSection = styled.section`
   label {
-    font-size: 24px;
+    font-size: 35px;
   }
   input {
-    font-size: 24px;
+    font-size: 35px;
   }
 `;
 

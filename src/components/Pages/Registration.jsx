@@ -1,5 +1,5 @@
 import { signUp } from 'api/auth';
-import FormRegistration from 'components/Form/FormRegistration';
+import FormRegistration from 'components/old_Form/FormRegistration';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 

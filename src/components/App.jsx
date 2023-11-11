@@ -1,34 +1,55 @@
-import UserList from './UserList/UserList';
-import { Routes, Route, NavLink } from 'react-router-dom';
-import styled from 'styled-components';
+import { lazy, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { Route, Routes } from 'react-router-dom';
 
-import Registration from './Pages/Registration';
-import Login from './Pages/Login';
-import { Suspense } from 'react';
+import { useAuth } from 'hooks/useAuth';
+import { refreshUser } from 'redux/auth/operations';
 
-const StyledLink = styled(NavLink)`
-  color: black;
+import Layout from './Layout';
+import PrivateRoute from './PrivateRoute';
+import PublicRoute from './PublucRoute';
+import { CircularProgress } from '@mui/material';
 
-  &.active {
-    color: orange;
-  }
-`;
+const HomePage = lazy(() => import('../Pages/Home/Home'));
+const RegisterPage = lazy(() => import('../Pages/Register/Register'));
+const LoginPage = lazy(() => import('../Pages/Login/Login'));
+const ContactsPage = lazy(() => import('../Pages/Contacts/Contacts'));
 
 export const App = () => {
-  return (
-    <div>
-      <nav>
-        <StyledLink to="/" end>
-          Home
-        </StyledLink>
-        <StyledLink to="/about">Login</StyledLink>
-        {/* <StyledLink to="/registration">Registration</StyledLink> */}
-      </nav>
-      <Routes>
-        <Route path="/" element={<UserList />} />
-        <Route path="/about" element={<Login />} />
-        <Route path="/registration" element={<Registration />} />
-      </Routes>
-    </div>
+  const dispatch = useDispatch();
+  const { isRefreshing } = useAuth();
+
+  useEffect(() => {
+    dispatch(refreshUser());
+  }, [dispatch]);
+
+  return isRefreshing ? (
+    <CircularProgress />
+  ) : (
+    <Routes>
+      <Route path="/" element={<Layout />}>
+        <Route index element={<HomePage />} />
+
+        <Route
+          path="/register"
+          element={
+            <PublicRoute redirectTo="/login" component={<RegisterPage />} />
+          }
+        />
+        <Route
+          path="/login"
+          element={
+            <PublicRoute redirectTo="/contacts" component={<LoginPage />} />
+          }
+        />
+        <Route
+          path="/contacts"
+          element={
+            <PrivateRoute redirectTo="/login" component={<ContactsPage />} />
+          }
+        />
+        <Route path="*" element={<HomePage />} />
+      </Route>
+    </Routes>
   );
 };
